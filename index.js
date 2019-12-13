@@ -6,10 +6,12 @@ const Versions = ['major', 'minor', 'patch'];
 function fetchAndFilterLabels() {
   const labels = github.context.payload.pull_request.labels.filter(
     (label) =>
-      Versions.includes(label.toLowerCase())
+      Versions.includes(label.name.toLowerCase())
   );
 
-  return labels;
+  const labelNames = labels.map(label => label.name);
+
+  return labelNames;
 }
 
 function warningMessage() {
@@ -21,9 +23,9 @@ Please specify one of the following tags:
 try {
   const enforceSet = core.getInput('enforce');
 
-  let versionLabels = fetchAndFilterLabels();
+  const versionLabels = fetchAndFilterLabels();
 
-  let version = ''; // A version need to be give as output
+  let version = ''; // A version needs to be given as output
 
   // No version or too many versions found
   if (versionLabels.length !== 1) {
