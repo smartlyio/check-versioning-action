@@ -40,6 +40,7 @@ try {
   // Just one valid version
   else {
     version = versionLabels[0];
+    console.log(`Setting version to: ${version}`);
   }
 
   core.setOutput('VERSION_UPPER', version.toUpperCase());
