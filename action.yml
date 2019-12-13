@@ -1,13 +1,15 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'Check Version'
+description: 'Check the version type and enforce the value if that option is specified.'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
+  enforce:
+    description: 'If this is set to true, the action will fail if a version type is not specifed.'
+    required: false
+    default: false
 outputs:
-  time: # id of output
-    description: 'The time we we greeted you'
+  VERSION_UPPER:
+    description: 'Version type in uppercase'
+  VERSION_LOWER:
+    description: 'Version type in lowercase'
 runs:
   using: 'node12'
   main: 'index.js'
