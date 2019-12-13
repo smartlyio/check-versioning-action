@@ -1,18 +1,28 @@
-# Hello world JavaScript action
+# Version checking action action
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log. To learn how this action was built, see "[Creating a JavaScript action](https://help.github.com/en/articles/creating-a-javascript-action)" in the GitHub Help documentation.
+This action checks that there are correctly supplied version labels on the PR.
+
+There must be exactly one of the following labels: `major`, `minor`, `patch`
+
+If the correct labels are defined, this sets two environment variables: `VERSION_UPPER` and `VERSION_LOWER`, these being the upper and lower case type of the version.
+
+If the check fails, an error will be printed and if the parameter: `enforce` is set, then the build will fail.
 
 ## Inputs
 
-### `who-to-greet`
+### `enforce`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Optional** If this is set tu true, this will cause the action to fail with an error if the version is not specified correctly.
 
 ## Outputs
 
-### `time`
+### `VERSION_UPPER` 
 
-The time we greeted you.
+Version type as an uppercase string
+
+### `VERSION_LOWER`
+
+Version type as a lowercase string
 
 ## Example usage
 
