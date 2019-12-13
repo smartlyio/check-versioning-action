@@ -8,7 +8,7 @@ const Versions = {
   unknown: ''
 }
 
-function fetch_labels() {
+function fetchLabels() {
   const label_array = github.context.payload.pull_request.labels.map(a => a.name);
 
   return {
@@ -18,13 +18,13 @@ function fetch_labels() {
   };
 }
 
-function warning_message() {
+function warningMessage() {
   return `Invalid version specirifaction!
 Please specify one of the following tags:
   major, minor, patch`;
 }
 
-function detect_version(labels) {
+function detectVersion(labels) {
   if (labels.major === true && labels.minor === false && labels.patch === false) {
     return Versions.major;
   } else if (labels.major === false && labels.minor === true && labels.patch === false) {
@@ -39,11 +39,11 @@ function detect_version(labels) {
 try {
   const enforceSet = core.getInput('enforce');
 
-  const labels = fetch_labels()
-  const version = detect_version(labels)
+  const labels = fetchLabels()
+  const version = detectVersion(labels)
 
   if (version === Versions.unknown) {
-    console.log(warning_message())
+    console.log(warningMessage())
 
     if (enforceSet === 'true') {
       throw new Error('Invalid Verions specification');
