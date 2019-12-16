@@ -6,13 +6,19 @@ extends:
   - airbnb-base
   - plugin:jest/recommended
   - plugin:prettier/recommended
+  - plugin:import/typescript
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
+settings:
+  "import/extensions": [".ts"]
+parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 2018
 rules:
   'no-console': 'off'
   'prefer-destructuring': 'off'
+  "import/extensions": 'off'
 plugins:
   - jest
+  - "@typescript-eslint"

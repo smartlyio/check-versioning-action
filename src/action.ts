@@ -1,10 +1,14 @@
-const core = require("@actions/core");
-const github = require("@actions/github");
+import * as core from "@actions/core";
+import * as github from "@actions/github";
 
 const Versions = ["major", "minor", "patch"];
 
+type Label = {
+  name: string;
+};
+
 function fetchAndFilterLabels() {
-  const labels = github.context.payload.pull_request.labels
+  const labels = (github.context.payload.pull_request.labels as Label[])
     .map(label => label.name)
     .filter(label => Versions.includes(label.toLowerCase()));
 
@@ -17,7 +21,7 @@ Please specify one of the following tags:
   major, minor, patch`;
 }
 
-module.exports = () => {
+export default function action() {
   try {
     const enforceSet = core.getInput("enforce");
 
@@ -44,4 +48,4 @@ module.exports = () => {
   } catch (error) {
     core.setFailed(error.message);
   }
-};
+}

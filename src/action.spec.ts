@@ -1,12 +1,12 @@
-const core = require("@actions/core");
-const github = require("@actions/github");
+import * as core from "@actions/core";
+import * as github from "@actions/github";
 
-const action = require("./action.js");
+import action from "./action";
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
 
-function createLabel(label) {
+function createLabel(label: string) {
   return {
     color: "0b7f73",
     default: false,
@@ -23,6 +23,7 @@ describe("check-versioning-action", () => {
     it("parses major labels", () => {
       github.context.payload = {
         pull_request: {
+          number: 1,
           labels: [createLabel("major")]
         }
       };
@@ -35,6 +36,7 @@ describe("check-versioning-action", () => {
     it("parses minor labels", () => {
       github.context.payload = {
         pull_request: {
+          number: 1,
           labels: [createLabel("minor")]
         }
       };
@@ -47,6 +49,7 @@ describe("check-versioning-action", () => {
     it("parses patch labels", () => {
       github.context.payload = {
         pull_request: {
+          number: 1,
           labels: [createLabel("patch")]
         }
       };
@@ -59,11 +62,12 @@ describe("check-versioning-action", () => {
     it("throws an error with multiple labels", () => {
       github.context.payload = {
         pull_request: {
+          number: 1,
           labels: [createLabel("patch"), createLabel("minor")]
         }
       };
 
-      core.getInput.mockReturnValue("true");
+      (core.getInput as jest.Mock).mockReturnValue("true");
       action();
       expect(core.setFailed).toHaveBeenCalled();
     });
