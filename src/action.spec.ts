@@ -72,6 +72,19 @@ describe("check-versioning-action", () => {
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
     });
 
+    it("sets empty version when there are no labels", () => {
+      github.context.payload = {
+        pull_request: {
+          number: 1,
+          labels: []
+        }
+      };
+
+      action();
+      expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
+      expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
+    });
+
     describe("with enforce true", () => {
       it("sets failed message when using with multiple labels", () => {
         github.context.payload = {
@@ -85,6 +98,33 @@ describe("check-versioning-action", () => {
         action();
         expect(core.setFailed).toHaveBeenCalled();
       });
+
+      it("sets failed message when there are no labels", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: []
+          }
+        };
+
+        (core.getInput as jest.Mock).mockReturnValue("true");
+        action();
+        expect(core.setFailed).toHaveBeenCalled();
+      });
+
+      it("parses minor labels", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: [createLabel("minor")]
+          }
+        };
+
+        action();
+        expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "MINOR");
+        expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "minor");
+      });
+
     });
   });
 });
