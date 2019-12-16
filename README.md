@@ -27,7 +27,7 @@ Version type as a lowercase string
 ## Example usage
 
 ```yaml
-uses: smartlyio/check-versioning-action@v2
+uses: smartlyio/check-versioning-action@v3
 ```
 
 ## Development
