@@ -19,6 +19,7 @@ Please specify one of the following tags:
 
 function main() {
   try {
+    console.log("HERE I AM");
     const enforceSet = core.getInput("enforce");
 
     const versionLabels = fetchAndFilterLabels();
