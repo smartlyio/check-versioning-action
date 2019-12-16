@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "lint": "eslint '**/*.js'",
     "package": "ncc build index.js -o dist",
-    "lint": "eslint '**/*.js'"
+    "release": "npm install && npm run test && npm run lint && npm run package"
   },
   "repository": {
     "type": "git",
