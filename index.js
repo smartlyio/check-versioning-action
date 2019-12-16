@@ -21,6 +21,7 @@ function main() {
   try {
     console.log("HERE I AM");
     console.log("github context", github.context);
+    console.log("labels", github.context.payload.pull_request.lables);
     const enforceSet = core.getInput("enforce");
 
     const versionLabels = fetchAndFilterLabels();
