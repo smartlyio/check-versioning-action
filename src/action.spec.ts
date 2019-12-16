@@ -124,7 +124,6 @@ describe("check-versioning-action", () => {
         expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "MINOR");
         expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "minor");
       });
-
     });
   });
 });
