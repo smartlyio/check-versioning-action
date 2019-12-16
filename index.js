@@ -20,6 +20,7 @@ Please specify one of the following tags:
 function main() {
   try {
     console.log("HERE I AM");
+    console.log("github context", github.context);
     const enforceSet = core.getInput("enforce");
 
     const versionLabels = fetchAndFilterLabels();
