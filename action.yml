@@ -12,4 +12,4 @@ outputs:
     description: 'Version type in lowercase'
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'dist/index.js'
