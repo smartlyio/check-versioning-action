@@ -59,7 +59,7 @@ describe("check-versioning-action", () => {
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "patch");
     });
 
-    it("throws an error with multiple labels", () => {
+    it("sets empty version when there are multiple labels", () => {
       github.context.payload = {
         pull_request: {
           number: 1,
@@ -67,9 +67,24 @@ describe("check-versioning-action", () => {
         }
       };
 
-      (core.getInput as jest.Mock).mockReturnValue("true");
       action();
-      expect(core.setFailed).toHaveBeenCalled();
+      expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
+      expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
+    });
+
+    describe("with enforce true", () => {
+      it("sets failed message when using with multiple labels", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: [createLabel("patch"), createLabel("minor")]
+          }
+        };
+
+        (core.getInput as jest.Mock).mockReturnValue("true");
+        action();
+        expect(core.setFailed).toHaveBeenCalled();
+      });
     });
   });
 });
