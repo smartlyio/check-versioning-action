@@ -32,11 +32,13 @@ uses: smartlyio/check-versioning-action@v2
 
 ## Development
 
-### Run tests
+### Development scripts
 
-``` bash
-npm run test
-```
+- Run typescript: `npm run compile`
+- Run test: `npm run test`
+- Run linters: `npm run lint`
+
+Run all the above: `npm run all`
 
 ### Release new version
 
