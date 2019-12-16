@@ -1,7 +1,7 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 
-const checkVersioningAction = require("./index.js");
+const action = require("./action.js");
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
@@ -27,7 +27,7 @@ describe("check-versioning-action", () => {
         }
       };
 
-      checkVersioningAction();
+      action();
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "MAJOR");
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "major");
     });
@@ -39,7 +39,7 @@ describe("check-versioning-action", () => {
         }
       };
 
-      checkVersioningAction();
+      action();
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "MINOR");
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "minor");
     });
@@ -51,7 +51,7 @@ describe("check-versioning-action", () => {
         }
       };
 
-      checkVersioningAction();
+      action();
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "PATCH");
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "patch");
     });
@@ -64,7 +64,7 @@ describe("check-versioning-action", () => {
       };
 
       core.getInput.mockReturnValue("true");
-      checkVersioningAction();
+      action();
       expect(core.setFailed).toHaveBeenCalled();
     });
   });
