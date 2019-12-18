@@ -11008,6 +11008,8 @@ function fetchAndFilterLabels() {
     const labels = github.context.payload.pull_request.labels
         .map(label => label.name)
         .filter(label => Versions.includes(label.toLowerCase()));
+    console.log(github.context.payload);
+    console.log(labels);
     return labels;
 }
 function warningMessage() {

@@ -12,6 +12,8 @@ function fetchAndFilterLabels() {
     .map(label => label.name)
     .filter(label => Versions.includes(label.toLowerCase()));
 
+  console.log(github.context.payload);
+  console.log(labels);
   return labels;
 }
 
