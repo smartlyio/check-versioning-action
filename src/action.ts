@@ -8,7 +8,7 @@ type Label = {
   name: string;
 };
 
-function fetchAndFilterLabels() {
+function fetchAndFilterLabels():string[] {
   const labels = (github.context.payload.pull_request.labels as Label[])
     .map(label => label.name)
     .filter(label => Versions.includes(label.toLowerCase()));
@@ -16,7 +16,7 @@ function fetchAndFilterLabels() {
   return labels;
 }
 
-function noReleaseSet() {
+function noReleaseSet():boolean {
   const labels = (github.context.payload.pull_request.labels as Label[])
     .map(label => label.name)
     .filter(label => NoReleaseLabels.includes(label.toLowerCase()));
@@ -33,7 +33,7 @@ Please specify one of the following tags:
 export default function action() {
   try {
     const enforceSet = core.getInput("enforce");
-    const allow_no_release_label = core.getInput("allow_no_release");
+    const noReleasePermitted = core.getInput("allow_no_release");
 
     const versionLabels = fetchAndFilterLabels();
     const noReleaseLabel = noReleaseSet();
@@ -45,7 +45,7 @@ export default function action() {
       console.log(warningMessage());
 
       if (enforceSet === "true") {
-        if (allow_no_release_label === "true" && noReleaseLabel) {
+        if (noReleasePermitted === "true" && noReleaseLabel) {
           console.log("NO_RELEASE label set, so, this seems like it's intentional, carry on then.")
         } else {
           throw new Error("Invalid version specification");
@@ -55,8 +55,12 @@ export default function action() {
         console.log("NOTE: CURRENT STATE WILL NOT DO A RELEASE");
       }
     } else {
-      // Just one valid version
-      version = versionLabels[0];
+      if (noReleaseLabel) {
+          throw new Error("ERROR! Both 'no_release' and a version specified, failing!");
+      } else {
+        // Just one valid version
+        version = versionLabels[0];
+      }
     }
 
     core.setOutput("VERSION_UPPER", version.toUpperCase());
