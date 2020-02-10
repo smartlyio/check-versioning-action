@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 
 const Versions = ["major", "minor", "patch"];
-const NoReleaseLabels = ["no release", "no_release", "no-release"];
+const NoReleaseLabels = ["no release", "norelease", "no_release", "no-release"];
 
 type Label = {
   name: string;
