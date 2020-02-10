@@ -18,8 +18,7 @@ function fetchAndFilterLabels():string[] {
 
 function noReleaseSet():boolean {
   const labels = (github.context.payload.pull_request.labels as Label[])
-    .map(label => label.name)
-    .filter(label => NoReleaseLabels.includes(label.toLowerCase()));
+    .filter(label => NoReleaseLabels.includes(label.name.toLowerCase()));
 
   return (labels.length > 0)
 }
