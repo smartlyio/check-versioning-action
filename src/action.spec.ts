@@ -59,6 +59,18 @@ describe("check-versioning-action", () => {
       expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "patch");
     });
 
+    it("Fails if both version and 'no release' are set", () => {
+      github.context.payload = {
+        pull_request: {
+          number: 1,
+          labels: [createLabel("patch"), createLabel("no_release")]
+        }
+      };
+
+      action();
+      expect(core.setFailed).toHaveBeenCalled();
+    });
+
     it("sets empty version when there are multiple labels", () => {
       github.context.payload = {
         pull_request: {
@@ -107,7 +119,64 @@ describe("check-versioning-action", () => {
           }
         };
 
-        (core.getInput as jest.Mock).mockReturnValue("true");
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        (core.getInput as jest.Mock).mockReturnValueOnce("false");
+        action();
+        expect(core.setFailed).toHaveBeenCalled();
+      });
+
+      it("sets failed message when there are no labels, even if the no-release option is set.", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: []
+          }
+        };
+
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        action();
+        expect(core.setFailed).toHaveBeenCalled();
+      });
+
+      it("sets failed message when there are no labels, even if the no-release label is set.", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: [createLabel("no_release")]
+          }
+        };
+
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        (core.getInput as jest.Mock).mockReturnValueOnce("false");
+        action();
+        expect(core.setFailed).toHaveBeenCalled();
+      });
+
+      it("Fails if both version and no release set without allowing label", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: [createLabel("minor"), createLabel("no_release")]
+          }
+        };
+
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        (core.getInput as jest.Mock).mockReturnValueOnce("false");
+        action();
+        expect(core.setFailed).toHaveBeenCalled();
+      });
+
+      it("Fails if both version and no release set with allowing label", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: [createLabel("minor"), createLabel("no_release")]
+          }
+        };
+
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
         action();
         expect(core.setFailed).toHaveBeenCalled();
       });
@@ -120,9 +189,40 @@ describe("check-versioning-action", () => {
           }
         };
 
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
         action();
         expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "MINOR");
         expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "minor");
+      });
+
+      it("Accepts no release when properly configured", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: [createLabel("no_release")]
+          }
+        };
+
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        action();
+        expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
+        expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
+      });
+
+      it("Accepts no release when properly configured 2", () => {
+        github.context.payload = {
+          pull_request: {
+            number: 1,
+            labels: [createLabel("no release")]
+          }
+        };
+
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        action();
+        expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
+        expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
       });
 
     });
