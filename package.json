@@ -1,7 +1,7 @@
 {
-  "name": "hello-world-javascript-action",
-  "version": "1.0.0",
-  "description": "This action prints \"Hello World\" or \"Hello\" + the name of a person to greet to the log.",
+  "name": "check-version-javascript-action",
+  "version": "4.0.0",
+  "description": "This action checks versioning labels.",
   "main": "index.js",
   "scripts": {
     "compile": "tsc",
