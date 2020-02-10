@@ -12,11 +12,11 @@ If the check fails, an error will be printed and if the parameter: `enforce` is 
 
 ### `enforce`
 
-**Optional** If this is set tu true, this will cause the action to fail with an error if the version is not specified correctly.
+**Optional** If this is set to true, this will cause the action to fail with an error if the version is not specified correctly.
 
 ### `allow_no_release`
 
-**Optional** Allow a `no release`, `no_release` or `no-release` label to allow the function to not fail with enforce even if no version is present. Care needs to be taken when using this as enforce will NOT preven the function from returning an empy version type string. This is intended for use in places where a release label of some kind is required and a PR that should NOT do a release is explicity labelled.
+**Optional** Allow a `no release`, `norelease`, `no_release` or `no-release` label to allow the function to not fail with enforce even if no version is present. Care needs to be taken when using this as enforce will NOT prevent the function from returning an empty version type string. This is intended for use in places where a release label of some kind is required and a PR that should NOT do a release is explicity labelled.
 
 ## Outputs
 
