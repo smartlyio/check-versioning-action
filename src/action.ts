@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 
 const Versions = ["major", "minor", "patch"];
+const NoReleaseLabels = ["no release", "no_release", "no-release"];
 
 type Label = {
   name: string;
@@ -15,6 +16,14 @@ function fetchAndFilterLabels() {
   return labels;
 }
 
+function noReleaseSet() {
+  const labels = (github.context.payload.pull_request.labels as Label[])
+    .map(label => label.name)
+    .filter(label => NoReleaseLabels.includes(label.toLowerCase()));
+
+  return (labels.length > 0)
+}
+
 function warningMessage() {
   return `Invalid version specification!
 Please specify one of the following tags:
@@ -24,8 +33,10 @@ Please specify one of the following tags:
 export default function action() {
   try {
     const enforceSet = core.getInput("enforce");
+    const allow_no_release_label = core.getInput("allow_no_release");
 
     const versionLabels = fetchAndFilterLabels();
+    const noReleaseLabel = noReleaseSet();
 
     let version = ""; // A version need to be give as output
 
@@ -34,7 +45,12 @@ export default function action() {
       console.log(warningMessage());
 
       if (enforceSet === "true") {
-        throw new Error("Invalid version specification");
+        if (allow_no_release_label === "true" && noReleaseLabel) {
+          console.log("NO_RELEASE label set, so, this seems like it's intentional, carry on then.")
+        } else {
+          throw new Error("Invalid version specification");
+        }
+
       } else {
         console.log("NOTE: CURRENT STATE WILL NOT DO A RELEASE");
       }
