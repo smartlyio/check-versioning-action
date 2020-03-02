@@ -11014,7 +11014,7 @@ const core = __importStar(__webpack_require__(470));
 const github = __importStar(__webpack_require__(469));
 const Versions = ["major", "minor", "patch"];
 const NoReleaseLabels = ["no release", "norelease", "no_release", "no-release"];
-function fetchAndFilterLabels(client, pullRequest) {
+function fetchLabels(client, pullRequest) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const PRPayload = yield client.pulls.get({
@@ -11023,10 +11023,7 @@ function fetchAndFilterLabels(client, pullRequest) {
                 pull_number: pullRequest.number
             });
             const allLabels = PRPayload.data.labels;
-            const labels = allLabels
-                .map(label => label.name)
-                .filter(label => Versions.includes(label.toLowerCase()));
-            return labels;
+            return allLabels;
         }
         catch (error) {
             core.setFailed(error.message);
@@ -11034,10 +11031,11 @@ function fetchAndFilterLabels(client, pullRequest) {
         }
     });
 }
-function noReleaseSet() {
-    const labels = github.context.payload.pull_request
-        .labels.filter(label => NoReleaseLabels.includes(label.name.toLowerCase()));
-    return labels.length > 0;
+function filterLabels(allLabels, labelFilter) {
+    const labels = allLabels
+        .map(label => label.name)
+        .filter(label => labelFilter.includes(label.toLowerCase()));
+    return labels;
 }
 function warningMessage() {
     return `Invalid version specification!
@@ -11050,8 +11048,9 @@ function action() {
             const client = new github.GitHub(core.getInput("GITHUB_TOKEN"));
             const pullRequest = github.context.issue;
             const enforceSet = core.getInput("enforce");
-            const versionLabels = yield fetchAndFilterLabels(client, pullRequest);
-            const noReleaseLabel = noReleaseSet();
+            const allLabels = yield fetchLabels(client, pullRequest);
+            const versionLabels = filterLabels(allLabels, Versions);
+            const noReleaseLabel = filterLabels(allLabels, NoReleaseLabels).length === 1;
             let version = ""; // A version need to be give as output
             let continueRelease = "false";
             // No version or too many versions found

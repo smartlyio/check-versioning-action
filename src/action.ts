@@ -8,34 +8,26 @@ type Label = {
   name: string;
 };
 
-async function fetchAndFilterLabels(
-  client: any,
-  pullRequest: any
-): Promise<string[]> {
+async function fetchLabels(client: any, pullRequest: any): Promise<Label[]> {
   try {
     const PRPayload = await client.pulls.get({
       owner: pullRequest.owner,
       repo: pullRequest.repo,
       pull_number: pullRequest.number
     });
-    const allLabels = PRPayload.data.labels;
-    const labels = (allLabels as Label[])
-      .map(label => label.name)
-      .filter(label => Versions.includes(label.toLowerCase()));
-    return labels;
+    const allLabels: Label[] = PRPayload.data.labels as Label[];
+    return allLabels;
   } catch (error) {
     core.setFailed(error.message);
     return [];
   }
 }
 
-function noReleaseSet(): boolean {
-  const labels = (github.context.payload.pull_request
-    .labels as Label[]).filter(label =>
-    NoReleaseLabels.includes(label.name.toLowerCase())
-  );
-
-  return labels.length > 0;
+function filterLabels(allLabels: Label[], labelFilter: string[]): string[] {
+  const labels = allLabels
+    .map(label => label.name)
+    .filter(label => labelFilter.includes(label.toLowerCase()));
+  return labels;
 }
 
 function warningMessage() {
@@ -51,8 +43,10 @@ export default async function action() {
 
     const enforceSet = core.getInput("enforce");
 
-    const versionLabels = await fetchAndFilterLabels(client, pullRequest);
-    const noReleaseLabel = noReleaseSet();
+    const allLabels = await fetchLabels(client, pullRequest);
+    const versionLabels = filterLabels(allLabels, Versions);
+    const noReleaseLabel =
+      filterLabels(allLabels, NoReleaseLabels).length === 1;
 
     let version = ""; // A version need to be give as output
     let continueRelease = "false";
