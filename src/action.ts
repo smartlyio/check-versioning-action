@@ -8,7 +8,10 @@ type Label = {
   name: string;
 };
 
-async function fetchAndFilterLabels(client: any, pullRequest: any): Promise<string[]> {
+async function fetchAndFilterLabels(
+  client: any,
+  pullRequest: any
+): Promise<string[]> {
   try {
     const PRPayload = await client.pulls.get({
       owner: pullRequest.owner,
@@ -43,8 +46,7 @@ Please specify one of the following tags:
 
 export default async function action() {
   try {
-
-    const client = new github.GitHub(core.getInput('GITHUB_TOKEN'));
+    const client = new github.GitHub(core.getInput("GITHUB_TOKEN"));
     const pullRequest = github.context.issue;
 
     const enforceSet = core.getInput("enforce");
