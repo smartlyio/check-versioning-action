@@ -1,10 +1,12 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-import action from "./action";
+import action, {fetchLabels} from "./action";
+
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
+jest.mock.fn("fetchLabels");
 
 function createLabel(label: string) {
   return {
@@ -217,12 +219,13 @@ describe("check-versioning-action", () => {
             labels: [createLabel("no release")]
           }
         };
-
+        (fetchLabels as jest.Mock).mockReturnValueOnce([{name: "no_release"}]);
         (core.getInput as jest.Mock).mockReturnValueOnce("true");
         (core.getInput as jest.Mock).mockReturnValueOnce("true");
         action();
         expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
         expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
+        expect(core.setOutput).toHaveBeenCalledWith("CONTINUE_RELEASE", "false");
       });
     });
   });
