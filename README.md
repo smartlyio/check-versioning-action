@@ -4,19 +4,23 @@ This action checks that there are correctly supplied version labels on the PR.
 
 There must be exactly one of the following labels: `major`, `minor`, `patch`
 
+The label `no release` is also acceptable but the return value of `CONTINUE_RELEASE` will be false
+
 If the correct labels are defined, this sets two environment variables: `VERSION_UPPER` and `VERSION_LOWER`, these being the upper and lower case type of the version.
 
-If the check fails, an error will be printed and if the parameter: `enforce` is set, then the build will fail.
+In addition, there is a variable: `CONTINUE_RELEASE` that is set to true only if the labels are set in such a way as to make a release (i.e. not `no release`)
+
+If the check fails, an error will be printed and if the parameter: `enforce` is set (default), then the build will fail.
 
 ## Inputs
 
+### GITHUB_TOKEN
+
+**Required** GitHub token as passed to the workflow
+
 ### `enforce`
 
-**Optional** If this is set to true, this will cause the action to fail with an error if the version is not specified correctly.
-
-### `allow_no_release`
-
-**Optional** Allow a `no release`, `norelease`, `no_release` or `no-release` label to allow the function to not fail with enforce even if no version is present. Care needs to be taken when using this as enforce will NOT prevent the function from returning an empty version type string. This is intended for use in places where a release label of some kind is required and a PR that should NOT do a release is explicity labelled.
+**Optional** If this is set to true, this will cause the action to fail with an error if the version is not specified correctly. Default true.
 
 ## Outputs
 
@@ -27,6 +31,10 @@ Version type as an uppercase string
 ### `VERSION_LOWER`
 
 Version type as a lowercase string
+
+### `CONTINUE_RELEASE`
+
+Set to true if the version is one of: `major`, `minor`, `patch`
 
 ## Example usage
 

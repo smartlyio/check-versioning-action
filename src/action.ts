@@ -48,19 +48,19 @@ export default async function action() {
     const pullRequest = github.context.issue;
 
     const enforceSet = core.getInput("enforce");
-    const noReleasePermitted = core.getInput("allow_no_release");
 
     const versionLabels = await fetchAndFilterLabels(client, pullRequest);
     const noReleaseLabel = noReleaseSet();
 
     let version = ""; // A version need to be give as output
+    let continueRelease = "false";
 
     // No version or too many versions found
     if (versionLabels.length !== 1) {
       console.log(warningMessage());
 
       if (enforceSet === "true") {
-        if (noReleasePermitted === "true" && noReleaseLabel) {
+        if (noReleaseLabel) {
           console.log(`
               NO_RELEASE label set, so, this seems like it's intentional, carry on then.
             `);
@@ -77,10 +77,12 @@ export default async function action() {
     } else {
       // Just one valid version
       version = versionLabels[0];
+      continueRelease = "true";
     }
 
     core.setOutput("VERSION_UPPER", version.toUpperCase());
     core.setOutput("VERSION_LOWER", version.toLowerCase());
+    core.setOutput("CONTINUE_RELEASE", continueRelease);
   } catch (error) {
     core.setFailed(error.message);
   }
