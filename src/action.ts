@@ -8,24 +8,22 @@ type Label = {
   name: string;
 };
 
-async function fetchAndFilterLabels(client: any, pullRequest: any): string[] {
-  let labels: string[] = []
+async function fetchAndFilterLabels(client: any, pullRequest: any): Promise<string[]> {
   try {
-      const PRPayload = await client.pulls.get({
-            owner: pullRequest.owner,
-            repo: pullRequest.repo,
-            pull_number: pullRequest.number
-        });
-      const allLabels = PRPayload.data.labels;
-      labels = (allLabels as Label[])
-        .map(label => label.name)
-        .filter(label => Versions.includes(label.toLowerCase()));
-      return labels;
-    } catch (error) {
-      core.setFailed(error.message);
-      return labels;
-    }
-
+    const PRPayload = await client.pulls.get({
+      owner: pullRequest.owner,
+      repo: pullRequest.repo,
+      pull_number: pullRequest.number
+    });
+    const allLabels = PRPayload.data.labels;
+    const labels = (allLabels as Label[])
+      .map(label => label.name)
+      .filter(label => Versions.includes(label.toLowerCase()));
+    return labels;
+  } catch (error) {
+    core.setFailed(error.message);
+    return [];
+  }
 }
 
 function noReleaseSet(): boolean {
