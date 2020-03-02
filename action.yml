@@ -1,19 +1,20 @@
 name: 'Check Version'
 description: 'Check the version type and enforce the value if that option is specified.'
 inputs:
+  GITHUB_TOKEN:
+    description: GitHub token
+    required: true
   enforce:
     description: 'If this is set to true, the action will fail if a version type is not specifed.'
     required: false
-    default: false
-  allow_no_release:
-    description: 'If this is set, then no_release tag is considered an acceptable "release" label.'
-    required: false
-    default: false
+    default: true
 outputs:
   VERSION_UPPER:
     description: 'Version type in uppercase'
   VERSION_LOWER:
     description: 'Version type in lowercase'
+  CONTINUE_RELEASE:
+    description: 'Set to true if the version is one of: major, minor, patch'
 runs:
   using: 'node12'
   main: 'dist/index.js'
