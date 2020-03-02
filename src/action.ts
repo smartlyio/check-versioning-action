@@ -79,6 +79,7 @@ export default async function action() {
     } else {
       // Just one valid version
       version = versionLabels[0];
+      console.log(`Going ahead with version: `, version);
       continueRelease = "true";
     }
 
