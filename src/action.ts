@@ -8,12 +8,24 @@ type Label = {
   name: string;
 };
 
-function fetchAndFilterLabels(): string[] {
-  const labels = (github.context.payload.pull_request.labels as Label[])
-    .map(label => label.name)
-    .filter(label => Versions.includes(label.toLowerCase()));
+async function fetchAndFilterLabels(client: any, pullRequest: any): string[] {
+  let labels: string[] = []
+  try {
+      const PRPayload = await client.pulls.get({
+            owner: pullRequest.owner,
+            repo: pullRequest.repo,
+            pull_number: pullRequest.number
+        });
+      const allLabels = PRPayload.data.labels;
+      labels = (allLabels as Label[])
+        .map(label => label.name)
+        .filter(label => Versions.includes(label.toLowerCase()));
+      return labels;
+    } catch (error) {
+      core.setFailed(error.message);
+      return labels;
+    }
 
-  return labels;
 }
 
 function noReleaseSet(): boolean {
@@ -31,12 +43,16 @@ Please specify one of the following tags:
   major, minor, patch`;
 }
 
-export default function action() {
+export default async function action() {
   try {
+
+    const client = new github.GitHub(core.getInput('GITHUB_TOKEN'));
+    const pullRequest = github.context.issue;
+
     const enforceSet = core.getInput("enforce");
     const noReleasePermitted = core.getInput("allow_no_release");
 
-    const versionLabels = fetchAndFilterLabels();
+    const versionLabels = await fetchAndFilterLabels(client, pullRequest);
     const noReleaseLabel = noReleaseSet();
 
     let version = ""; // A version need to be give as output
