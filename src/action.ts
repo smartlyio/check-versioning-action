@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import fetchLabels from "./fetchLabels";
 
 const Versions = ["major", "minor", "patch"];
 const NoReleaseLabels = ["no release", "norelease", "no_release", "no-release"];
@@ -7,21 +8,6 @@ const NoReleaseLabels = ["no release", "norelease", "no_release", "no-release"];
 type Label = {
   name: string;
 };
-
-async function fetchLabels(client: any, pullRequest: any): Promise<Label[]> {
-  try {
-    const PRPayload = await client.pulls.get({
-      owner: pullRequest.owner,
-      repo: pullRequest.repo,
-      pull_number: pullRequest.number
-    });
-    const allLabels: Label[] = PRPayload.data.labels as Label[];
-    return allLabels;
-  } catch (error) {
-    core.setFailed(error.message);
-    return [];
-  }
-}
 
 function filterLabels(allLabels: Label[], labelFilter: string[]): string[] {
   const labels = allLabels
