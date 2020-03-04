@@ -25,7 +25,6 @@ describe("check-versioning-action", () => {
   describe("parsing label information", () => {
     afterEach(() => {
       labels = null;
-      (core.setOutput as jest.Mock).mockReset();
     });
 
     it("parses major labels", async () => {
