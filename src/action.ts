@@ -13,6 +13,8 @@ function fetchAndFilterLabels(): string[] {
     .map(label => label.name)
     .filter(label => Versions.includes(label.toLowerCase()));
 
+  console.log(`Found labels: ${labels}`);
+
   return labels;
 }
 
@@ -38,6 +40,9 @@ export default function action() {
 
     const versionLabels = fetchAndFilterLabels();
     const noReleaseLabel = noReleaseSet();
+    if (noReleaseSet) {
+      console.log("no-release label is set");
+    }
 
     let version = ""; // A version need to be give as output
 
