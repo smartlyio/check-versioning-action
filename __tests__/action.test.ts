@@ -1,7 +1,8 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import {mocked} from 'ts-jest/utils';
 
-import action from "./action";
+import action from "../src/action";
 
 function createLabel(label: string) {
   return {
@@ -19,7 +20,7 @@ jest.mock("@actions/core");
 jest.mock("@actions/github");
 
 let labels: Array<{ name: string }> = null;
-jest.mock("./fetchLabels", () => async () => Promise.resolve(labels));
+jest.mock("../src/fetchLabels", () => async () => Promise.resolve(labels));
 
 describe("check-versioning-action", () => {
   describe("parsing label information", () => {
@@ -30,23 +31,23 @@ describe("check-versioning-action", () => {
     it("parses major labels", async () => {
       labels = [createLabel("major")];
       await action();
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "MAJOR");
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "major");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_UPPER", "MAJOR");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_LOWER", "major");
     });
 
     it("parses minor labels", async () => {
       labels = [createLabel("minor")];
 
       await action();
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "MINOR");
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "minor");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_UPPER", "MINOR");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_LOWER", "minor");
     });
 
     it("parses patch labels", async () => {
       labels = [createLabel("patch")];
       await action();
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "PATCH");
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "patch");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_UPPER", "PATCH");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_LOWER", "patch");
     });
 
     it("Fails if both version and 'no release' are set", async () => {
@@ -60,16 +61,16 @@ describe("check-versioning-action", () => {
       labels = [createLabel("patch"), createLabel("minor")];
 
       await action();
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_UPPER", "");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_LOWER", "");
     });
 
     it("sets empty version when there are no labels", async () => {
       labels = [];
 
       await action();
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
-      expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_UPPER", "");
+      expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_LOWER", "");
     });
 
     describe("with enforce true", () => {
@@ -81,15 +82,15 @@ describe("check-versioning-action", () => {
           }
         };
 
-        (core.getInput as jest.Mock).mockReturnValue("true");
+        mocked(core.getInput).mockReturnValue("true");
         await action();
         expect(core.setFailed).toHaveBeenCalled();
       });
 
       it("sets failed message when there are no labels", async () => {
         labels = [];
-        // (core.getInput as jest.Mock).mockReturnValueOnce("true");
-        // (core.getInput as jest.Mock).mockReturnValueOnce("false");
+        // mocked(core.getInput).mockReturnValueOnce("true");
+        // mocked(core.getInput).mockReturnValueOnce("false");
         await action();
         expect(core.setFailed).toHaveBeenCalled();
       });
@@ -102,8 +103,8 @@ describe("check-versioning-action", () => {
           }
         };
 
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
         await action();
         expect(core.setFailed).toHaveBeenCalled();
       });
@@ -116,8 +117,8 @@ describe("check-versioning-action", () => {
           }
         };
 
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
-        (core.getInput as jest.Mock).mockReturnValueOnce("false");
+        mocked(core.getInput).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("false");
         await action();
         expect(core.setFailed).toHaveBeenCalled();
       });
@@ -130,8 +131,8 @@ describe("check-versioning-action", () => {
           }
         };
 
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
-        (core.getInput as jest.Mock).mockReturnValueOnce("false");
+        mocked(core.getInput).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("false");
         await action();
         expect(core.setFailed).toHaveBeenCalled();
       });
@@ -139,8 +140,8 @@ describe("check-versioning-action", () => {
       it("Fails if both version and no release set with allowing label", async () => {
         labels = [createLabel("minor"), createLabel("no_release")];
 
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
         await action();
         expect(core.setFailed).toHaveBeenCalled();
       });
@@ -148,30 +149,30 @@ describe("check-versioning-action", () => {
       it("parses minor labels", async () => {
         labels = [createLabel("minor")];
 
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
         await action();
-        expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "MINOR");
-        expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "minor");
+        expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_UPPER", "MINOR");
+        expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_LOWER", "minor");
       });
 
       it("Accepts no release when properly configured", async () => {
         labels = [createLabel("no_release")];
 
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
         await action();
-        expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
-        expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
+        expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_UPPER", "");
+        expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_LOWER", "");
       });
 
       it("Accepts no release when properly configured 2", async () => {
         labels = [createLabel("no release")];
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
-        (core.getInput as jest.Mock).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
+        mocked(core.getInput).mockReturnValueOnce("true");
         await action();
-        expect(core.setOutput).toHaveBeenCalledWith("VERSION_UPPER", "");
-        expect(core.setOutput).toHaveBeenCalledWith("VERSION_LOWER", "");
-        expect(core.setOutput).toHaveBeenCalledWith(
+        expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_UPPER", "");
+        expect(mocked(core.setOutput)).toHaveBeenCalledWith("VERSION_LOWER", "");
+        expect(mocked(core.setOutput)).toHaveBeenCalledWith(
           "CONTINUE_RELEASE",
           "false"
         );
