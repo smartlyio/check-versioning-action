@@ -2,7 +2,7 @@
   "name": "check-version-javascript-action",
   "version": "4.0.0",
   "description": "This action checks versioning labels.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "compile": "tsc",
     "test": "jest",
