@@ -16,13 +16,13 @@ function filterLabels(allLabels: Label[], labelFilter: string[]): string[] {
   return labels;
 }
 
-function warningMessage() {
+function warningMessage(): string {
   return `Invalid version specification!
 Please specify one of the following tags:
   major, minor, patch`;
 }
 
-export default async function action() {
+export default async function action(): Promise<void> {
   try {
     const client = new github.GitHub(core.getInput("GITHUB_TOKEN"));
     const pullRequest = github.context.issue;
