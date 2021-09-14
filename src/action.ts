@@ -24,12 +24,11 @@ Please specify one of the following tags:
 
 export default async function action(): Promise<void> {
   try {
-    const client = github.getOctokit(core.getInput("GITHUB_TOKEN"));
     const pullRequest = github.context.issue;
 
     const enforceSet = core.getInput("enforce");
 
-    const allLabels = await fetchLabels(client, pullRequest);
+    const allLabels = await fetchLabels(pullRequest);
     const versionLabels = filterLabels(allLabels, Versions);
     const noReleaseLabel =
       filterLabels(allLabels, NoReleaseLabels).length === 1;

@@ -4,10 +4,11 @@ type Label = {
 };
 
 export default async function fetchLabels(
-  client: any,
   pullRequest: any
 ): Promise<Label[]> {
-  const PRPayload = await client.pulls.get({
+  const client = github.getOctokit(core.getInput("GITHUB_TOKEN"));
+
+  const PRPayload = await client.rest.pulls.get({
     owner: pullRequest.owner,
     repo: pullRequest.repo,
     pull_number: pullRequest.number,
