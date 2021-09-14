@@ -39,18 +39,18 @@ export default async function action() {
 
     // No version or too many versions found
     if (versionLabels.length !== 1) {
-      console.log(warningMessage());
+      core.warning(warningMessage());
 
       if (enforceSet === "true") {
         if (noReleaseLabel) {
-          console.log(`
+          core.info(`
               NO_RELEASE label set, so, this seems like it's intentional, carry on then.
             `);
         } else {
           throw new Error("Invalid version specification");
         }
       } else {
-        console.log("NOTE: CURRENT STATE WILL NOT DO A RELEASE");
+        core.warning("NOTE: CURRENT STATE WILL NOT DO A RELEASE");
       }
     } else if (noReleaseLabel) {
       throw new Error(`
@@ -59,7 +59,7 @@ export default async function action() {
     } else {
       // Just one valid version
       version = versionLabels[0];
-      console.log(`Going ahead with version: `, version);
+      core.info(`Going ahead with version: ${version}`);
       continueRelease = "true";
     }
 
@@ -67,6 +67,7 @@ export default async function action() {
     core.setOutput("VERSION_LOWER", version.toLowerCase());
     core.setOutput("CONTINUE_RELEASE", continueRelease);
   } catch (error) {
+    core.error(error.message);
     core.setFailed(error.message);
   }
 }
