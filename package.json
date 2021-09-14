@@ -1,27 +1,29 @@
 {
-  "name": "check-version-javascript-action",
-  "version": "4.0.0",
+  "name": "check-versioning-action",
+  "version": "5.0.0",
   "description": "This action checks versioning labels.",
   "main": "lib/index.js",
   "scripts": {
-    "compile": "tsc",
+    "build": "tsc",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "package": "ncc build --source-map",
     "test": "jest",
-    "lint": "eslint '**/*.ts'",
-    "all": "npm run compile && npm run test && npm run lint",
-    "package": "ncc build index.ts -o dist",
-    "release": "npm install && npm run all && npm run package"
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
+    "version": "npm run build && npm run package && git add -- dist"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/hello-world-javascript-action.git"
+    "url": "git+https://github.com/smartlyio/check-versioning-action.git"
   },
-  "keywords": [],
+  "keywords": [
+    "actions",
+    "versioning",
+    "labels"
+  ],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/actions/hello-world-javascript-action/issues"
-  },
-  "homepage": "https://github.com/actions/hello-world-javascript-action#readme",
   "dependencies": {
     "@actions/core": "^1.1.0",
     "@actions/github": "^2.0.0"
