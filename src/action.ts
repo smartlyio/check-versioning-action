@@ -26,9 +26,10 @@ export default async function action(): Promise<void> {
   try {
     const pullRequest = github.context.issue;
 
+    const token = core.getInput("GITHUB_TOKEN");
     const enforceSet = core.getInput("enforce");
 
-    const allLabels = await fetchLabels(pullRequest);
+    const allLabels = await fetchLabels(token, pullRequest);
     const versionLabels = filterLabels(allLabels, Versions);
     const noReleaseLabel =
       filterLabels(allLabels, NoReleaseLabels).length === 1;

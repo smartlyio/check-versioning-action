@@ -6,9 +6,10 @@ type Label = {
 };
 
 export default async function fetchLabels(
+  token: string,
   pullRequest: any
 ): Promise<Label[]> {
-  const client = github.getOctokit(core.getInput("GITHUB_TOKEN"));
+  const client = github.getOctokit(token);
 
   const PRPayload = await client.rest.pulls.get({
     owner: pullRequest.owner,
