@@ -12,7 +12,7 @@ function createLabel(label: string) {
     id: 1,
     name: label,
     node_id: "MDU6TGFiZWwxNzM2OTY3MDE1",
-    url: `https://api.github.com/repos/smartlyio/ci-sla/labels/${label}`
+    url: `https://api.github.com/repos/smartlyio/ci-sla/labels/${label}`,
   };
 }
 
@@ -96,8 +96,8 @@ describe("check-versioning-action", () => {
         github.context.payload = {
           pull_request: {
             number: 1,
-            labels: [createLabel("patch"), createLabel("minor")]
-          }
+            labels: [createLabel("patch"), createLabel("minor")],
+          },
         };
 
         mocked(core.getInput).mockReturnValue("true");
@@ -117,8 +117,8 @@ describe("check-versioning-action", () => {
         github.context.payload = {
           pull_request: {
             number: 1,
-            labels: []
-          }
+            labels: [],
+          },
         };
 
         mocked(core.getInput).mockReturnValueOnce("true");
@@ -131,8 +131,8 @@ describe("check-versioning-action", () => {
         github.context.payload = {
           pull_request: {
             number: 1,
-            labels: [createLabel("no_release")]
-          }
+            labels: [createLabel("no_release")],
+          },
         };
 
         mocked(core.getInput).mockReturnValueOnce("true");
@@ -145,8 +145,8 @@ describe("check-versioning-action", () => {
         github.context.payload = {
           pull_request: {
             number: 1,
-            labels: [createLabel("minor"), createLabel("no_release")]
-          }
+            labels: [createLabel("minor"), createLabel("no_release")],
+          },
         };
 
         mocked(core.getInput).mockReturnValueOnce("true");

@@ -11,8 +11,8 @@ type Label = {
 
 function filterLabels(allLabels: Label[], labelFilter: string[]): string[] {
   const labels = allLabels
-    .map(label => label.name)
-    .filter(label => labelFilter.includes(label.toLowerCase()));
+    .map((label) => label.name)
+    .filter((label) => labelFilter.includes(label.toLowerCase()));
   return labels;
 }
 
