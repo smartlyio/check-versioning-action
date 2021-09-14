@@ -1,4 +1,6 @@
 /* eslint-disable */
+import * as github from "@actions/github";
+
 type Label = {
   name: string;
 };
