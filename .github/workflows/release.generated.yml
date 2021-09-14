@@ -35,21 +35,6 @@ jobs:
         npm run build
         npm run package
 
-  test:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: "Build action for test"
-      run: |
-        npm install
-        npm run all
-        git clean -fXd
-    - name: Test executing the action
-      uses: ./
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        enforce: false
-
   release:
     runs-on: ubuntu-18.04
     name: "Build and release action"
