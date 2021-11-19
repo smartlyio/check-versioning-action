@@ -1,6 +1,6 @@
 {
   "name": "check-versioning-action",
-  "version": "5.2.12",
+  "version": "5.2.13",
   "description": "This action checks versioning labels.",
   "main": "lib/index.js",
   "scripts": {
