@@ -35,7 +35,7 @@
     "@vercel/ncc": "0.34.0",
     "eslint": "8.45.0",
     "eslint-config-airbnb-base": "15.0.0",
-    "eslint-config-prettier": "8.8.0",
+    "eslint-config-prettier": "8.9.0",
     "eslint-config-standard": "17.1.0",
     "eslint-plugin-github": "4.9.2",
     "eslint-plugin-import": "2.27.5",
