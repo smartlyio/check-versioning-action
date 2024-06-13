@@ -16,5 +16,5 @@ outputs:
   CONTINUE_RELEASE:
     description: 'Set to true if the version is one of: major, minor, patch'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
