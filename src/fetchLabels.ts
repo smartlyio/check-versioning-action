@@ -40,7 +40,8 @@ async function getPullNumber(client: any, context: any) {
       repo: context.repo.repo,
     });
 
-  core.info(pullRequests.data);
+  core.info(context.sha); // REMOVE ME
+  core.info(pullRequests.data); // REMOVE ME
   if (pullRequests.data.length !== 1) {
     core.warning(
       `Multiple PRs associated with the current commit sha! Please provide a unique sha (avoid cherry-picking and creating branches off of branches).`
