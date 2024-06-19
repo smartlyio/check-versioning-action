@@ -1,4 +1,5 @@
 /* eslint-disable */
+import * as core from "@actions/core";
 import * as github from "@actions/github";
 
 type Label = {
@@ -32,11 +33,19 @@ async function getPayload(client: any, context: any) {
 }
 
 async function getPullNumber(client: any, context: any) {
-  return (
+  const pullRequests =
     await client.rest.repos.listPullRequestsAssociatedWithCommit({
       commit_sha: context.sha,
       owner: context.repo.owner,
       repo: context.repo.repo,
-    })
-  ).data[0].number;
+    });
+
+  if (pullRequests.length !== 1) {
+    core.warning(
+      `Multiple PRs associated with the current commit sha! Please provide a unique sha (avoid cherry-picking and creating branches off of branches).`
+    );
+    throw new Error("Ambiguous commit sha");
+  }
+
+  return pullRequests.data[0].number;
 }
