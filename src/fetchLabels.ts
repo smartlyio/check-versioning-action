@@ -40,11 +40,14 @@ async function getPullNumber(client: any, context: any) {
       repo: context.repo.repo,
     });
 
-  core.info(context.sha); // REMOVE ME
-  core.info(pullRequests.data); // REMOVE ME
   if (pullRequests.data.length !== 1) {
+    // Create a merge commit: sha corresponds to the merge commit sha
+    // Squash and merge: sha corresponds to the new commit sha
+    // Rebase and merge: surprisingly, rebasing also generates a new commit sha even if branch was up-to-date with master.
+    //
+    // None of these should be associated with any PR (unless there's a hash collision).
     core.warning(
-      `Multiple PRs associated with the current commit sha! Please provide a unique sha (avoid cherry-picking and creating branches off of branches).`
+      `Commit SHA (${context.sha}) is associated with multiple PRs! Did a hash collision occur?`
     );
     throw new Error("Ambiguous commit sha");
   }
