@@ -7,15 +7,15 @@ type Label = {
 
 export default async function fetchLabels(
   token: string,
-  pullRequest: any
+  context: any
 ): Promise<Label[]> {
   const client = github.getOctokit(token);
 
-  const PRPayload = await client.rest.pulls.get({
-    owner: pullRequest.owner,
-    repo: pullRequest.repo,
-    pull_number: pullRequest.number,
+  const payload = await client.rest.pulls.get({
+    owner: context.issue.owner,
+    repo: context.issue.repo,
+    pull_number: context.issue.number,
   });
-  const allLabels: Label[] = PRPayload.data.labels as Label[];
+  const allLabels: Label[] = payload.data.labels as Label[];
   return allLabels;
 }
