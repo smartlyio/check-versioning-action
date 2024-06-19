@@ -61,10 +61,9 @@ Please specify one of the following tags:
 function action() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const pullRequest = github.context.issue;
             const token = core.getInput("GITHUB_TOKEN");
             const enforceSet = core.getInput("enforce");
-            const allLabels = yield (0, fetchLabels_1.default)(token, pullRequest);
+            const allLabels = yield (0, fetchLabels_1.default)(token, github.context);
             const versionLabels = filterLabels(allLabels, Versions);
             const noReleaseLabel = filterLabels(allLabels, NoReleaseLabels).length === 1;
             let version = ""; // A version need to be give as output
@@ -151,20 +150,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 /* eslint-disable */
+const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-function fetchLabels(token, pullRequest) {
+function fetchLabels(token, context) {
     return __awaiter(this, void 0, void 0, function* () {
         const client = github.getOctokit(token);
-        const PRPayload = yield client.rest.pulls.get({
-            owner: pullRequest.owner,
-            repo: pullRequest.repo,
-            pull_number: pullRequest.number,
-        });
-        const allLabels = PRPayload.data.labels;
+        const payload = yield getPayload(client, context);
+        const allLabels = payload.data.labels;
         return allLabels;
     });
 }
 exports["default"] = fetchLabels;
+function getPayload(client, context) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (context.eventName === "push") {
+            return yield client.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: yield getPullNumber(client, context),
+            });
+        }
+        return yield client.rest.pulls.get({
+            owner: context.issue.owner,
+            repo: context.issue.repo,
+            pull_number: context.issue.number,
+        });
+    });
+}
+function getPullNumber(client, context) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const pullRequests = yield client.rest.repos.listPullRequestsAssociatedWithCommit({
+            commit_sha: context.sha,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+        });
+        if (pullRequests.data.length !== 1) {
+            // Create a merge commit: sha corresponds to the merge commit sha
+            // Squash and merge: sha corresponds to the new commit sha
+            // Rebase and merge: surprisingly, rebasing also generates a new commit sha even if branch was up-to-date with master.
+            //
+            // None of these should be associated with any PR (unless there's a hash collision).
+            core.warning(`Commit SHA (${context.sha}) is associated with multiple PRs! Did a hash collision occur?`);
+            throw new Error("Ambiguous commit sha");
+        }
+        return pullRequests.data[0].number;
+    });
+}
 
 
 /***/ }),
