@@ -18,7 +18,7 @@
       "matchUpdateTypes": [
         "major"
       ],
-      "depTypeList": [
+      "matchDepTypes": [
         "dependencies"
       ],
       "labels": [
@@ -32,7 +32,7 @@
         "patch",
         "minor"
       ],
-      "depTypeList": [
+      "matchDepTypes": [
         "dependencies"
       ],
       "labels": [
@@ -41,7 +41,7 @@
       ]
     },
     {
-      "depTypeList": [
+      "matchDepTypes": [
         "devDependencies"
       ],
       "matchPackageNames": [
@@ -53,12 +53,8 @@
       ]
     },
     {
-      "depTypeList": [
+      "matchDepTypes": [
         "devDependencies"
-      ],
-      "excludePackageNames": [
-        "@vercel/ncc",
-        "typescript"
       ],
       "matchUpdateTypes": [
         "patch",
@@ -68,10 +64,14 @@
         "no release",
         "renovate-deps"
       ],
-      "automerge": true
+      "automerge": true,
+      "matchPackageNames": [
+        "!@vercel/ncc",
+        "!typescript"
+      ]
     },
     {
-      "depTypeList": [
+      "matchDepTypes": [
         "devDependencies"
       ],
       "matchPackageNames": [
@@ -87,7 +87,7 @@
       "automerge": true
     },
     {
-      "depTypeList": [
+      "matchDepTypes": [
         "devDependencies"
       ],
       "matchPackageNames": [
@@ -102,7 +102,7 @@
       ]
     },
     {
-      "depTypeList": [
+      "matchDepTypes": [
         "devDependencies"
       ],
       "matchUpdateTypes": [
